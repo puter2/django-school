@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+{% load static %}
+<link rel="stylesheet" href="{% static 'style.css' %}">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>school app</h1>
+{% include 'links.html' %}
+{% block content %}
+{% endblock %}
+</body>
+</html>
