@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path
 from django.views.generic import TemplateView
 from accounts.views import LoginView, LogoutView, RegisterView
-from school.views import GradesView
+from school.views import GradesView, AddGradeView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -27,5 +27,5 @@ urlpatterns = [
     path("logout", LogoutView.as_view(), name="logout"),
     path("register", RegisterView.as_view(), name="register"),
     path("grades", GradesView.as_view(), name="grades"),
-
+    path("add_grade", AddGradeView.as_view(), name="add_grade"),
 ]
