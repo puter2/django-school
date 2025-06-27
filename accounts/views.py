@@ -22,7 +22,7 @@ class LoginView(View):
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
-                return render(request, 'form.html', {'message': 'logged in'})
+                return render(request, 'base.html', {'message': 'logged in'})
         return render(request, 'form.html', {'message': 'error'})
 
 class LogoutView(View):
@@ -41,5 +41,6 @@ class RegisterView(View):
             user = form.save(commit=False)
             user.set_password(form.cleaned_data['password1'])
             user.save()
+            login(request, user)
             return redirect('home',)
         return render(request, 'form.html', {'form': form})
