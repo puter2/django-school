@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<form method="post">
+{% csrf_token %}
+    <label>
+        user:
+        <select name="username">
+            {% for user in unassigned %}
+            <option value="{{ user }}">{{ user }}</option>
+            {% endfor %}
+        </select>
+    </label>
+    <label>name
+    <input type="text" name="name" placeholder="name">
+    </label>
+    <label>
+        last name <input type="text" name="last_name" placeholder="last name">
+    </label>
+    <select id="choice" name="role">
+        <option value="student" >student</option>
+        <option value="teacher" selected>teacher</option>
+    </select>
+    <label id="subject" >
+        subject <input name="subject" type="text" placeholder="subject">
+    </label>
+    <input type="submit">
+</form>
+    <script>
+    function hide_or_show(){
+        console.log('a')
+        choice = document.querySelector('#choice');
+        subject = document.querySelector('#subject');
+        if(choice.value==="student"){
+            subject.style.display = 'none'
+        }
+        else {
+            subject.style.display = 'block'
+        }
+    }
+    choice = document.querySelector('#choice');
+    choice.addEventListener('change',hide_or_show)
+    </script>
+
+{% endblock %}

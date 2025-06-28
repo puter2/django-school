@@ -4,8 +4,9 @@
         <a href="{% url 'logout' %}">logout</a>
         <a href="{% url 'grades' %}">show grades</a>
         <a href="{% url 'add_grade' %}">add grade</a>
-    {% else %}
+        <a href="{% url 'assign_user_role' %}">assign users</a>
         <a href="{% url 'register' %}">register</a>
+    {% else %}
         <a href="{% url 'login' %}">login</a>
     {% endif %} 
 

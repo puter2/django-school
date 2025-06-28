@@ -9,3 +9,4 @@ class GradesForm(forms.ModelForm):
     class Meta:
         model = Grade
         fields = ['grade', 'student']
+
