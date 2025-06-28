@@ -10,7 +10,10 @@ from school.models import Grade, Student, Teacher
 class GradesView(View):
 
     def get(self, request):
-        grades = Grade.objects.all()
+        user = request.user
+        student = Student.objects.get(user=user)
+        grades = Grade.objects.filter(student=student)
+        #grades = Grade.objects.all()
         return render(request, 'show_grades.html', {'grades': grades})
 
 class AddGradeView(View):
@@ -36,8 +39,6 @@ class AddGradeView(View):
             return redirect('home',)
         return render(request, 'form.html', {'form': form})
 
-#TODO widok admina gdzie admin widzi nowych userow i przyporzadkuje ich do nauczyciela/ucznia
-
 class AssignUserRoleView(View):
     def get(self, request):
         users = User.objects.values_list('id', flat=True)
@@ -53,14 +54,12 @@ class AssignUserRoleView(View):
         return  render(request, 'AssignUserRoleForm.html', {'unassigned': unassigned})
 
     def post(self, request):
-        print(request.POST)
         name = request.POST['name']
         last_name = request.POST['last_name']
         username = request.POST['username']
         role = request.POST['role']
         subject = request.POST['subject']
         user = User.objects.get(username=username)
-        print(user)
         if role == 'student':
             new_student = Student.objects.create(user=user, name=name, lastname=last_name)
             new_student.save()
