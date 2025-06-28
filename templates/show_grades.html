@@ -6,6 +6,10 @@
     <th>grade</th>
     <th>teacher</th>
     <th>subject</th>
+    {% if is_teacher %}
+        <th>Edit</th>
+        <th>Delete</th>
+        {% endif %}
     </thead>
     <tbody>
     {% for grade in grades %}
@@ -13,6 +17,10 @@
             <td>{{ grade.grade }}</td>
             <td>{{ grade.teacher }}</td>
             <td>{{ grade.subject }}</td>
+        {% if is_teacher %}
+        <td>E</td>
+        <td>D</td>
+        {% endif %}
         </tr>
     {% endfor %}
     </tbody>

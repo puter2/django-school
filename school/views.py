@@ -11,10 +11,26 @@ class GradesView(View):
 
     def get(self, request):
         user = request.user
-        student = Student.objects.get(user=user)
-        grades = Grade.objects.filter(student=student)
+        Student.objects.exists()
+        try:
+            student = Student.objects.get(user=user)
+        except Student.DoesNotExist:
+            student = None
+        try:
+            teacher = Teacher.objects.get(user=user)
+        except Teacher.DoesNotExist:
+            teacher = None
+        grades = Grade.objects.all()
+        if student:
+            grades = Grade.objects.filter(student=student)
+            is_teacher = False
+        elif teacher:
+            grades = Grade.objects.filter(teacher=teacher)
+            is_teacher = True
+        else:
+            return redirect('home')
         #grades = Grade.objects.all()
-        return render(request, 'show_grades.html', {'grades': grades})
+        return render(request, 'show_grades.html', {'grades': grades, 'is_teacher': is_teacher})
 
 class AddGradeView(View):
 
