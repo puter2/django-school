@@ -3,7 +3,13 @@
 
 <form method="post">
 {% csrf_token %}
-    {{ form }}
+    {% if multiple %}
+        {% for f in form %}
+            {{ f }}
+        {% endfor %}
+    {% else %}
+        {{ form }}
+    {% endif %}
     <input type="submit">
 </form>
 
