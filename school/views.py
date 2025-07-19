@@ -11,6 +11,7 @@ class GradesView(View):
 
     def get(self, request):
         user = request.user
+        role = user.role
         Student.objects.exists()
         try:
             student = Student.objects.get(user=user)
@@ -35,8 +36,6 @@ class GradesView(View):
 class AddGradeView(View):
 
     def get(self, request):
-        # teachers = Teacher.objects.get(user=request.user)
-        # print(teachers)
         form = GradesForm()
         return render(request,'form.html', {'form': form})
 

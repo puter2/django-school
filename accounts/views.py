@@ -4,6 +4,7 @@ from django.shortcuts import render, redirect
 from django.views import View
 
 from accounts.forms import LoginForm, RegisterForm, RoleForm
+from accounts.models import Role
 
 
 # Create your views here.
@@ -41,10 +42,8 @@ class RegisterView(View):
         role_form = RoleForm(request.POST)
         if user_form.is_valid() and role_form.is_valid():
             user = user_form.save(commit=False)
-            role = role_form.save(commit=False)
-            role.user = user
             user.set_password(user_form.cleaned_data['password1'])
             user.save()
-            role.save()
+            role = Role.objects.create(user=user, role=role_form.cleaned_data['role'])
             return redirect('home',)
         return render(request, 'form.html', {'form': [user_form, role_form], 'multiple' : True})

@@ -3,9 +3,13 @@
     {% if user.is_authenticated %}
         <a href="{% url 'logout' %}">logout</a>
         <a href="{% url 'grades' %}">show grades</a>
-        <a href="{% url 'add_grade' %}">add grade</a>
-        <a href="{% url 'assign_user_role' %}">assign users</a>
-        <a href="{% url 'register' %}">register</a>
+        {% if user.role.role != 'student'%}
+            <a href="{% url 'add_grade' %}">add grade</a>
+        {% endif %}
+        {% if user.role.role == 'admin'%}
+            <a href="{% url 'assign_user_role' %}">assign users</a>
+            <a href="{% url 'register' %}">register</a>
+        {% endif %}
     {% else %}
         <a href="{% url 'login' %}">login</a>
     {% endif %} 
