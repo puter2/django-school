@@ -43,7 +43,9 @@ class AddGradeView(View):
         form = GradesForm(request.POST)
         if form.is_valid():
             grade = form.cleaned_data['grade']
+            print(grade)
             student = form.cleaned_data['student']
+            print(student, type(student))
             # VERY TEMPORARY
             teacher = Teacher.objects.get(user=request.user)
             subject = Teacher.objects.get(user=request.user).subject

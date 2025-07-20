@@ -5,7 +5,7 @@ from django.test import Client
 from django.urls import reverse
 
 from accounts.models import Role
-from school.models import Student, Teacher
+from school.models import Student, Teacher, Grade
 
 
 # Create your tests here.
@@ -16,12 +16,12 @@ def test_home_view():
     assert response.status_code == 200
 
 @pytest.mark.django_db
-def test_creating_students_while_creating_roles(students):
-    assert len(students) == len(Role.objects.filter(role='Student'))
+def test_creating_students_while_creating_roles(students_role):
+    assert len(students_role) == len(Student.objects.all())
 
 @pytest.mark.django_db
-def test_creating_teachers_while_creating_roles(teachers):
-    assert len(teachers) == len(Role.objects.filter(role='Teacher'))
+def test_creating_teachers_while_creating_roles(teachers_role):
+    assert len(teachers_role) == len(Teacher.objects.all())
 
 @pytest.mark.django_db
 @pytest.mark.parametrize('username,password',[
@@ -60,3 +60,18 @@ def test_registering_teacher_view_post(username, password):
     assert User.objects.filter(username=username).exists()
     user = User.objects.get(username=username)
     assert Teacher.objects.filter(user=user).exists()
+
+@pytest.mark.django_db
+def test_adding_grades_view_post(students_role, teachers_role):
+    for student, teacher in zip(students_role, teachers_role):
+        student_user = student.user
+        teacher_user = teacher.user
+        c = Client()
+        c.force_login(teacher_user)
+        url = reverse('add_grade')
+        response = c.post(url, {
+            'grade': 1.,
+            'student': student_user.id,
+        })
+        assert response.status_code == 302
+        assert Grade.objects.filter(student=student_user.id).exists()
