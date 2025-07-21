@@ -10,9 +10,14 @@ class Student(models.Model):
     def __str__(self):
         return f'{self.user.first_name} {self.user.last_name}'
 
+class Subject(models.Model):
+    subject = models.CharField(max_length=100)
+    def __str__(self):
+        return self.subject
+
 class Teacher(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    subject = models.CharField(max_length=100)
+    subject = models.ManyToManyField(Subject, verbose_name='Subject')
     def __str__(self):
         return f'{self.user.first_name} {self.user.last_name}'
 
@@ -23,3 +28,4 @@ class Grade(models.Model):
     teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
     def __str__(self):
         return str(self.grade) + self.subject + str(self.teacher)
+
