@@ -96,3 +96,10 @@ class AddSubjectView(View):
             subject = form.save()
             return redirect('home',)
         return render(request, 'form.html', {'form': form})
+
+class ShowUsersView(View):
+    def get(self, request):
+        users = User.objects.all()
+        for u in users:
+            print(u.first_name, u.last_name)
+        return render(request, 'show_users.html', {'users': users})
