@@ -1,6 +1,6 @@
 from django import forms
 
-from school.models import Grade, Student
+from school.models import Grade, Student, Subject
 
 
 class GradesForm(forms.ModelForm):
@@ -10,3 +10,8 @@ class GradesForm(forms.ModelForm):
         model = Grade
         fields = ['grade', 'student']
 
+class AddSubjectForm(forms.ModelForm):
+
+    class Meta:
+        model = Subject
+        fields = ['subject']

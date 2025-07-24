@@ -2,12 +2,13 @@ from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.views import View
 
-from school.forms import GradesForm
+from school.forms import GradesForm, AddSubjectForm
 from school.models import Grade, Student, Teacher
 
 
 # Create your views here.
 class GradesView(View):
+#TODO
 
     def get(self, request):
         user = request.user
@@ -43,14 +44,11 @@ class AddGradeView(View):
         form = GradesForm(request.POST)
         if form.is_valid():
             grade = form.cleaned_data['grade']
-            print(grade)
             student = form.cleaned_data['student']
-            print(student, type(student))
             # VERY TEMPORARY
             teacher = Teacher.objects.get(user=request.user)
             subject = Teacher.objects.get(user=request.user).subject
             ###############
-            print(request.user)
             new_grade = Grade.objects.create(grade=grade, student=student, teacher=teacher, subject=subject)
             new_grade.save()
             return redirect('home',)
@@ -84,3 +82,17 @@ class AssignUserRoleView(View):
             new_teacher = Teacher.objects.create(user=user, name=name, lastname=last_name, subject=subject)
             new_teacher.save()
         return redirect('home',)
+
+
+class AddSubjectView(View):
+
+    def get(self, request):
+        form = AddSubjectForm()
+        return render(request, 'form.html', {'form': form})
+
+    def post(self, request):
+        form = AddSubjectForm(request.POST)
+        if form.is_valid():
+            subject = form.save()
+            return redirect('home',)
+        return render(request, 'form.html', {'form': form})

@@ -8,7 +8,8 @@
         {% endif %}
         {% if user.role.role == 'admin'%}
             <a href="{% url 'assign_user_role' %}">assign users</a>
-            <a href="{% url 'register' %}">register</a>
+            <a href="{% url 'register' %}">register new user</a>
+            <a href="{% url 'add_subject' %}">add new subject</a>
         {% endif %}
     {% else %}
         <a href="{% url 'login' %}">login</a>
