@@ -59,4 +59,17 @@ class DeleteUserView(View):
             user.delete()
         return redirect('show_users')
 
+class EditUserView(View):
+    def get(self, request, pk):
+        user = User.objects.get(pk=pk)
+        return render(request, 'edit_user_form.html', {'cur_user': user})
+
+    def post(self, request, pk):
+        user = User.objects.get(pk=pk)
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        user.first_name = first_name
+        user.last_name = last_name
+        user.save()
+        return redirect('show_users')
 
