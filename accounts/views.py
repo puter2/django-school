@@ -47,3 +47,16 @@ class RegisterView(View):
             role = Role.objects.create(user=user, role=role_form.cleaned_data['role'])
             return redirect('home',)
         return render(request, 'form.html', {'form': [user_form, role_form], 'multiple' : True})
+
+class DeleteUserView(View):
+    def get(self, request, pk):
+        user = User.objects.get(pk=pk)
+        return render(request, 'delete_form.html', {'obj_name': user})
+
+    def post(self, request, pk):
+        if request.POST.get('operation') == 'Yes':
+            user = User.objects.get(pk=pk)
+            user.delete()
+        return redirect('show_users')
+
+

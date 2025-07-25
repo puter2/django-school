@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.views.generic import TemplateView
-from accounts.views import LoginView, LogoutView, RegisterView
+from accounts.views import LoginView, LogoutView, RegisterView, DeleteUserView
 from school.views import GradesView, AddGradeView, AssignUserRoleView, AddSubjectView, ShowUsersView
 
 urlpatterns = [
@@ -31,4 +31,5 @@ urlpatterns = [
     path("assign_user_role", AssignUserRoleView.as_view(), name="assign_user_role"),
     path("add_subject", AddSubjectView.as_view(), name="add_subject"),
     path("show_users", ShowUsersView.as_view(), name="show_users"),
+    path("show_users/delete/<int:pk>", DeleteUserView.as_view(), name="delete_user"),
 ]

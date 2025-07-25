@@ -7,9 +7,9 @@
     <td>first name</td>
     <td>last name</td>
     <td>role</td>
-    {% if user.role == 'admin' %}
-    <td></td>
-    <td></td>
+    {% if request.user.role|lower == "admin" %}
+        <td></td>
+        <td></td>
     {% endif %}
     </thead>
     {% for u in users %}
@@ -17,9 +17,9 @@
             <td>{{ u.first_name }}</td>
             <td>{{ u.last_name }}</td>
             <td>{{ u.role }}</td>
-            {% if user.role == 'admin' %}
+            {% if request.user.role|lower == "admin" %}
             <td>edit</td>
-            <td>delete</td>
+            <td><a href="{% url 'delete_user' u.id %}">delete</a></td>
             {% endif %}
         </tr>
     {% endfor %}

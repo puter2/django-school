@@ -100,6 +100,7 @@ class AddSubjectView(View):
 class ShowUsersView(View):
     def get(self, request):
         users = User.objects.all()
+        print(getattr(request.user, 'role', 'No role'))
         for u in users:
             print(u.first_name, u.last_name)
         return render(request, 'show_users.html', {'users': users})
