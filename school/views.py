@@ -100,7 +100,18 @@ class AddSubjectView(View):
 class ShowUsersView(View):
     def get(self, request):
         users = User.objects.all()
-        print(getattr(request.user, 'role', 'No role'))
-        for u in users:
-            print(u.first_name, u.last_name)
         return render(request, 'show_users.html', {'users': users})
+
+    def post(self, request):
+        filtered_users = User.objects.all()
+        first_name = request.POST['first_name']
+        if first_name:
+            filtered_users = filtered_users.filter(first_name__icontains=first_name)
+        last_name = request.POST['last_name']
+        if last_name:
+            filtered_users = filtered_users.filter(last_name__icontains=last_name)
+        role = request.POST['role']
+        if role:
+            filtered_users = filtered_users.filter(role__role=role)
+        print(first_name, last_name, filtered_users)
+        return render(request, 'show_users.html', {'users': filtered_users})
