@@ -47,7 +47,8 @@ class AddGradeView(View):
             student = form.cleaned_data['student']
             # VERY TEMPORARY
             teacher = Teacher.objects.get(user=request.user)
-            subject = Teacher.objects.get(user=request.user).subject
+            print(teacher.subject.all()[0])
+            subject = teacher.subject.all()[0]
             ###############
             new_grade = Grade.objects.create(grade=grade, student=student, teacher=teacher, subject=subject)
             new_grade.save()

@@ -23,9 +23,9 @@ class Teacher(models.Model):
 
 class Grade(models.Model):
     grade = models.FloatField()
-    subject = models.CharField(max_length=100)
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
     def __str__(self):
-        return str(self.grade) + self.subject + str(self.teacher)
+        return str(self.grade) + str(self.subject) + str(self.teacher)
 
