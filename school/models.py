@@ -27,5 +27,5 @@ class Grade(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
     def __str__(self):
-        return str(self.grade) + str(self.subject) + str(self.teacher)
+        return f'{self.grade} {self.subject} {self.teacher}'
 

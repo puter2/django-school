@@ -8,31 +8,19 @@ from school.models import Grade, Student, Teacher
 
 # Create your views here.
 class GradesView(View):
-#TODO
+#TODO teacher side
 
     def get(self, request):
         user = request.user
-        role = user.role
-        Student.objects.exists()
-        try:
+        print(user.role.role)
+        if user.role.role == 'teacher':
+            pass
+        elif user.role.role == 'student':
             student = Student.objects.get(user=user)
-        except Student.DoesNotExist:
-            student = None
-        try:
-            teacher = Teacher.objects.get(user=user)
-        except Teacher.DoesNotExist:
-            teacher = None
-        grades = Grade.objects.all()
-        if student:
             grades = Grade.objects.filter(student=student)
-            is_teacher = False
-        elif teacher:
-            grades = Grade.objects.filter(teacher=teacher)
-            is_teacher = True
-        else:
-            return redirect('home')
-        #grades = Grade.objects.all()
-        return render(request, 'show_grades.html', {'grades': grades, 'is_teacher': is_teacher})
+            print(grades)
+            return render(request, 'show_grades.html', {'grades': grades})
+        return redirect('home')
 
 #TODO check if grade is valid
 class AddGradeView(View):

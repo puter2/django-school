@@ -6,7 +6,7 @@
     <th>grade</th>
     <th>teacher</th>
     <th>subject</th>
-    {% if is_teacher %}
+    {% if user.role.role == 'teacher' %}
         <th>Edit</th>
         <th>Delete</th>
         {% endif %}
@@ -17,7 +17,7 @@
             <td>{{ grade.grade }}</td>
             <td>{{ grade.teacher }}</td>
             <td>{{ grade.subject }}</td>
-        {% if is_teacher %}
+        {% if user.role.role == 'teacher' %}
         <td>E</td>
         <td>D</td>
         {% endif %}
