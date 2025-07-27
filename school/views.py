@@ -34,22 +34,22 @@ class GradesView(View):
         #grades = Grade.objects.all()
         return render(request, 'show_grades.html', {'grades': grades, 'is_teacher': is_teacher})
 
+#TODO check if grade is valid
 class AddGradeView(View):
 
     def get(self, request):
-        form = GradesForm()
+        teacher = Teacher.objects.get(user=request.user)
+        form = GradesForm(teacher=teacher)
         return render(request,'form.html', {'form': form})
 
     def post(self, request):
-        form = GradesForm(request.POST)
+        teacher = Teacher.objects.get(user=request.user)
+        print(teacher)
+        form = GradesForm(request.POST, teacher=teacher)
         if form.is_valid():
             grade = form.cleaned_data['grade']
             student = form.cleaned_data['student']
-            # VERY TEMPORARY
-            teacher = Teacher.objects.get(user=request.user)
-            print(teacher.subject.all()[0])
-            subject = teacher.subject.all()[0]
-            ###############
+            subject = form.cleaned_data['subject']
             new_grade = Grade.objects.create(grade=grade, student=student, teacher=teacher, subject=subject)
             new_grade.save()
             return redirect('home',)

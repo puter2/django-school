@@ -4,11 +4,17 @@ from school.models import Grade, Student, Subject
 
 
 class GradesForm(forms.ModelForm):
-    student = forms.ModelChoiceField(queryset=Student.objects.all(), label="Select Student")
 
     class Meta:
         model = Grade
-        fields = ['grade', 'student']
+        fields = ['grade', 'student', 'subject']
+
+    #modifying fomr so that teacher can only add grades from his subjects
+    def __init__(self, *args, **kwargs):
+        teacher = kwargs.pop('teacher',None)
+        super().__init__(*args, **kwargs)
+        if teacher:
+            self.fields['subject'].queryset = teacher.subject.all()
 
 class AddSubjectForm(forms.ModelForm):
 
