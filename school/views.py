@@ -73,6 +73,7 @@ class AssignUserRoleView(View):
             new_teacher.save()
         return redirect('home',)
 
+#TODO testy
 
 class AddSubjectView(View):
 
@@ -116,3 +117,17 @@ class DeleteGradeView(View):
             grade = Grade.objects.get(pk=pk)
             grade.delete()
         return redirect('grades')
+
+class EditGradeView(View):
+    def get(self, request, pk):
+        grade = Grade.objects.get(pk=pk)
+        form = GradesForm(instance=grade)
+        return render(request, 'form.html', {'form': form})
+
+    def post(self, request, pk):
+        grade = Grade.objects.get(pk=pk)
+        form = GradesForm(request.POST, instance=grade)
+        if form.is_valid():
+            form.save()
+            return redirect('grades')
+        return render(request, 'form.html', {'form': form})

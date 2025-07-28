@@ -21,7 +21,7 @@
         {% elif user.role.role == 'teacher' %}
             <td>{{ grade.student }}</td>
             <td>{{ grade.subject }}</td>
-            <td>E</td>
+            <td><a href="{% url 'edit_grade' grade.id %}">Edit</a></td>
             <td><a href="{% url 'delete_grade' grade.id %}">Delete</a></td>
         {% endif %}
         </tr>
