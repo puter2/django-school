@@ -8,7 +8,6 @@ from school.models import Grade, Student, Teacher
 
 # Create your views here.
 class GradesView(View):
-#TODO teacher side
 
     def get(self, request):
         user = request.user
@@ -106,3 +105,14 @@ class ShowUsersView(View):
             filtered_users = filtered_users.filter(role__role=role)
         print(first_name, last_name, filtered_users)
         return render(request, 'show_users.html', {'users': filtered_users})
+
+class DeleteGradeView(View):
+    def get(self, request, pk):
+        grade = Grade.objects.get(pk=pk)
+        return render(request, 'delete_form.html', {'obj_name': grade})
+
+    def post(self, request, pk):
+        if request.POST.get('operation') == 'Yes':
+            grade = Grade.objects.get(pk=pk)
+            grade.delete()
+        return redirect('grades')

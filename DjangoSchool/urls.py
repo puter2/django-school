@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path
 from django.views.generic import TemplateView
 from accounts.views import LoginView, LogoutView, RegisterView, DeleteUserView, EditUserView
-from school.views import GradesView, AddGradeView, AssignUserRoleView, AddSubjectView, ShowUsersView
+from school.views import GradesView, AddGradeView, AssignUserRoleView, AddSubjectView, ShowUsersView, DeleteGradeView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -27,6 +27,7 @@ urlpatterns = [
     path("logout", LogoutView.as_view(), name="logout"),
     path("register", RegisterView.as_view(), name="register"),
     path("grades", GradesView.as_view(), name="grades"),
+    path("grades/delete/<int:pk>", DeleteGradeView.as_view(), name="delete_grade"),
     path("add_grade", AddGradeView.as_view(), name="add_grade"),
     path("assign_user_role", AssignUserRoleView.as_view(), name="assign_user_role"),
     path("add_subject", AddSubjectView.as_view(), name="add_subject"),

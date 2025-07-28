@@ -22,7 +22,7 @@
             <td>{{ grade.student }}</td>
             <td>{{ grade.subject }}</td>
             <td>E</td>
-            <td>D</td>
+            <td><a href="{% url 'delete_grade' grade.id %}">Delete</a></td>
         {% endif %}
         </tr>
     {% endfor %}
