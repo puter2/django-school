@@ -4,7 +4,7 @@
 <table>
     <thead>
     <th>grade</th>
-    <th>teacher</th>
+    <th>user</th>
     <th>subject</th>
     {% if user.role.role == 'teacher' %}
         <th>Edit</th>
@@ -15,11 +15,14 @@
     {% for grade in grades %}
         <tr>
             <td>{{ grade.grade }}</td>
+        {% if user.role.role == 'student' %}
             <td>{{ grade.teacher }}</td>
             <td>{{ grade.subject }}</td>
-        {% if user.role.role == 'teacher' %}
-        <td>E</td>
-        <td>D</td>
+        {% elif user.role.role == 'teacher' %}
+            <td>{{ grade.student }}</td>
+            <td>{{ grade.subject }}</td>
+            <td>E</td>
+            <td>D</td>
         {% endif %}
         </tr>
     {% endfor %}

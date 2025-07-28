@@ -14,7 +14,9 @@ class GradesView(View):
         user = request.user
         print(user.role.role)
         if user.role.role == 'teacher':
-            pass
+            teacher = Teacher.objects.get(user=user)
+            grades = Grade.objects.filter(teacher=teacher)
+            return render(request, 'show_grades.html', {'grades': grades})
         elif user.role.role == 'student':
             student = Student.objects.get(user=user)
             grades = Grade.objects.filter(student=student)
