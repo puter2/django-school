@@ -3,10 +3,8 @@
 {%  block content %}
 
 <div style="display: inline">
-    <form method="post" style="display: inline">
-        {% csrf_token %}
-        <p style="display: inline"><label>first name: </label><input type="text" name="first_name"></p>
-        <p style="display: inline"><label>last name: </label><input type="text" name="last_name"></p>
+    <form method="get" style="display: inline">
+        <p style="display: inline"><label>name: </label><input type="text" name="name"></p>
         <p style="display: inline"><label>
             role:
             <select name="role">
@@ -22,8 +20,7 @@
 <div>
     <table>
         <thead>
-        <td>first name</td>
-        <td>last name</td>
+        <td>name</td>
         <td>role</td>
         {% if request.user.role|lower == "admin" %}
             <td></td>
@@ -32,8 +29,7 @@
         </thead>
         {% for u in users %}
             <tr>
-                <td>{{ u.first_name }}</td>
-                <td>{{ u.last_name }}</td>
+                <td>{{ u.first_name }} {{ u.last_name }}</td>
                 <td>{{ u.role }}</td>
                 {% if request.user.role|lower == "admin" %}
                 <td><a href="{% url 'edit_user' u.id %}">edit</a></td>

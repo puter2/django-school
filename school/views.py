@@ -92,24 +92,17 @@ class AddSubjectView(View):
         return render(request, 'form.html', {'form': form})
 
 class ShowUsersView(View):
-    #TODO filter users using get
+    #TODO change view so that it's consistent
     def get(self, request):
         users = User.objects.all()
+        name = request.GET.get('name')
+        role = request.GET.get('role')
+        if name:
+            users = users.filter(Q(first_name__icontains=name) | Q(last_name__icontains=name))
+        if role:
+            users = users.filter(role__role=role)
         return render(request, 'show_users.html', {'users': users})
 
-    def post(self, request):
-        filtered_users = User.objects.all()
-        first_name = request.POST['first_name']
-        if first_name:
-            filtered_users = filtered_users.filter(first_name__icontains=first_name)
-        last_name = request.POST['last_name']
-        if last_name:
-            filtered_users = filtered_users.filter(last_name__icontains=last_name)
-        role = request.POST['role']
-        if role:
-            filtered_users = filtered_users.filter(role__role=role)
-        print(first_name, last_name, filtered_users)
-        return render(request, 'show_users.html', {'users': filtered_users})
 
 class DeleteGradeView(View):
     def get(self, request, pk):
