@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.views import View
 
@@ -8,18 +9,20 @@ from school.models import Grade, Student, Teacher
 
 # Create your views here.
 class GradesView(View):
-
+#TODO refactor
     def get(self, request):
         user = request.user
-        print(user.role.role)
+        name = request.GET.get('name')
         if user.role.role == 'teacher':
             teacher = Teacher.objects.get(user=user)
             grades = Grade.objects.filter(teacher=teacher)
+            grades = grades.filter(Q(student__user__first_name__contains=name) | Q(student__user__last_name__contains=name)) if name else grades
             return render(request, 'show_grades.html', {'grades': grades})
         elif user.role.role == 'student':
             student = Student.objects.get(user=user)
             grades = Grade.objects.filter(student=student)
-            print(grades)
+            grades = grades.filter(Q(teacher__user__first_name__contains=name) | Q(
+                teacher__user__last_name__contains=name)) if name else grades
             return render(request, 'show_grades.html', {'grades': grades})
         return redirect('home')
 
@@ -89,6 +92,7 @@ class AddSubjectView(View):
         return render(request, 'form.html', {'form': form})
 
 class ShowUsersView(View):
+    #TODO filter users using get
     def get(self, request):
         users = User.objects.all()
         return render(request, 'show_users.html', {'users': users})
