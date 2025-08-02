@@ -1,6 +1,6 @@
 from django import forms
 
-from school.models import Grade, Student, Subject
+from school.models import Grade, Student, Subject, Teacher
 
 
 class GradesForm(forms.ModelForm):
@@ -21,3 +21,14 @@ class AddSubjectForm(forms.ModelForm):
     class Meta:
         model = Subject
         fields = ['subject']
+
+class AddSubjectToTeacherForm(forms.Form):
+    teacher = forms.ModelChoiceField(
+        queryset=Teacher.objects.all(),
+        label="Teacher",)
+
+    subject = forms.ModelMultipleChoiceField(
+        queryset=Subject.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
+        required=True,
+        label='Subject',)

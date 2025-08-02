@@ -3,9 +3,10 @@ from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.views import View
 
-from school.forms import GradesForm, AddSubjectForm
+from school.forms import GradesForm, AddSubjectForm, AddSubjectToTeacherForm
 from school.models import Grade, Student, Teacher
 
+#TODO credential check
 
 # Create your views here.
 class GradesView(View):
@@ -39,12 +40,14 @@ class AddGradeView(View):
         print(teacher)
         form = GradesForm(request.POST, teacher=teacher)
         if form.is_valid():
+            print('a')
             grade = form.cleaned_data['grade']
             student = form.cleaned_data['student']
             subject = form.cleaned_data['subject']
             new_grade = Grade.objects.create(grade=grade, student=student, teacher=teacher, subject=subject)
             new_grade.save()
             return redirect('home',)
+        print('nie poszloi')
         return render(request, 'form.html', {'form': form})
 
 class AssignUserRoleView(View):
@@ -127,4 +130,19 @@ class EditGradeView(View):
         if form.is_valid():
             form.save()
             return redirect('grades')
+        return render(request, 'form.html', {'form': form})
+
+    #TODO assign subject view
+class AssignSubject(View):
+    def get(self, request):
+        form = AddSubjectToTeacherForm()
+        return render(request, 'form.html', {'form': form})
+
+    def post(self, request):
+        form = AddSubjectToTeacherForm(request.POST)
+        if form.is_valid():
+            teacher = form.cleaned_data['teacher']
+            subject = form.cleaned_data['subject']
+            teacher.subject.set(subject)
+            return redirect('home',)
         return render(request, 'form.html', {'form': form})

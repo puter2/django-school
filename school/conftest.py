@@ -2,7 +2,7 @@ import pytest
 from django.contrib.auth.models import User
 
 from accounts.models import Role
-from school.models import Grade
+from school.models import Grade, Subject, Teacher
 
 
 @pytest.fixture
@@ -10,14 +10,22 @@ def admin():
     return User.objects.create_superuser(username='admin', password='<PASSWORD>')
 
 @pytest.fixture
+def subjects():
+    lst = []
+    lst.append(Subject.objects.create(subject='Subject 1'))
+    lst.append(Subject.objects.create(subject='Subject 2'))
+    lst.append(Subject.objects.create(subject='Subject 3'))
+    return lst
+
+@pytest.fixture
 def users():
     lst = []
     lst.append(User.objects.create_user(username='user1', password='<PASSWORD>', first_name='user1', last_name='student'))
     lst.append(User.objects.create_user(username='user2', password='<PASSWORD>', first_name='user2', last_name='student'))
     lst.append(User.objects.create_user(username='user3', password='<PASSWORD>', first_name='user3', last_name='student'))
-    lst.append(User.objects.create_user(username='user4', password='<PASSWORD>'))
-    lst.append(User.objects.create_user(username='user5', password='<PASSWORD>'))
-    lst.append(User.objects.create_user(username='user6', password='<PASSWORD>'))
+    lst.append(User.objects.create_user(username='user4', password='<PASSWORD>', first_name='user4', last_name='teacher'))
+    lst.append(User.objects.create_user(username='user5', password='<PASSWORD>', first_name='user5', last_name='teacher'))
+    lst.append(User.objects.create_user(username='user6', password='<PASSWORD>', first_name='user6', last_name='teacher'))
     return lst
 
 @pytest.fixture
@@ -36,10 +44,10 @@ def teachers_role(users):
     lst.append(Role.objects.create(user=users[-3], role='teacher'))
     return lst
 
-# @pytest.fixture
-# def grades(students, teachers):
-#     lst = []
-#     lst.append(Grade.objects.create(grade=1, student=students[0], teacher=teachers[0]))
-#     lst.append(Grade.objects.create(grade=2, student=students[1], teacher=teachers[1]))
-#     lst.append(Grade.objects.create(grade=3, student=students[2], teacher=teachers[2]))
-#     return lst
+@pytest.fixture
+def teachers_subjects(teachers_role, subjects):
+    teachers = Teacher.objects.all()
+    for teacher, subject in zip(teachers, subjects):
+        teacher.subject.add(subject)
+        print(teacher.subject.all())
+    return teachers

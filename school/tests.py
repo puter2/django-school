@@ -62,8 +62,10 @@ def test_registering_teacher_view_post(username, password):
     assert Teacher.objects.filter(user=user).exists()
 
 @pytest.mark.django_db
-def test_adding_grades_view_post(students_role, teachers_role):
-    for student, teacher in zip(students_role, teachers_role):
+def test_adding_grades_view_post(students_role, teachers_subjects):
+    teachers = Teacher.objects.all()
+    students = Student.objects.all()
+    for student, teacher in zip(students, teachers):
         student_user = student.user
         teacher_user = teacher.user
         c = Client()
@@ -72,6 +74,8 @@ def test_adding_grades_view_post(students_role, teachers_role):
         response = c.post(url, {
             'grade': 1.,
             'student': student_user.id,
+            'subject': teacher.subject.all()[0].id,
         })
         assert response.status_code == 302
         assert Grade.objects.filter(student=student_user.id).exists()
+

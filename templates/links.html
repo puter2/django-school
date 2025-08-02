@@ -2,15 +2,16 @@
     <a href="{% url 'home' %}">Home</a>
     {% if user.is_authenticated %}
         <a href="{% url 'logout' %}">logout</a>
-        <a href="{% url 'grades' %}">show grades</a>
-        <a href="{% url 'show_users' %}">show users</a>
-        {% if user.role.role != 'student'%}
+        {% if user.role.role == 'student' or user.role.role == 'teacher'%}
+            <a href="{% url 'grades' %}">show grades</a>
+            <a href="{% url 'show_users' %}">show users</a>
             <a href="{% url 'add_grade' %}">add grade</a>
-        {% endif %}
-        {% if user.role.role == 'admin'%}
+        {% elif user.role.role == 'admin'%}
+            <a href="{% url 'show_users' %}">show users</a>
             <a href="{% url 'assign_user_role' %}">assign users</a>
             <a href="{% url 'register' %}">register new user</a>
             <a href="{% url 'add_subject' %}">add new subject</a>
+            <a href="{% url 'assign_subject' %}">assign subject to teacher</a>
         {% endif %}
     {% else %}
         <a href="{% url 'login' %}">login</a>
