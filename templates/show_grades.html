@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
 
 {%  block content %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'tooltip.css' %}">
+    <script src="{% static 'tooltips.js' %}"></script>
     <form method="get">
         <input type="text" name="name">
         <input type="submit">
@@ -18,7 +21,13 @@
     <tbody>
     {% for grade in grades %}
         <tr>
-            <td>{{ grade.grade }}</td>
+            {% if grade.description != None %}
+                <td class="tooltip"
+                    data-tooltip="teacher: {{ grade.teacher }}
+{{ grade.description }}">{{ grade.grade }}</td>
+            {% else %}
+                <td class="tooltip" data-tooltip="{{ grade.teacher }}">{{ grade.grade }}</td>
+            {% endif %}
         {% if user.role.role == 'student' %}
             <td>{{ grade.teacher }}</td>
             <td>{{ grade.subject }}</td>

@@ -1,0 +1,12 @@
+.tooltipText {
+    position: fixed;
+    display: none;
+    background: rgba(50, 50, 50, 0.9);
+    color: #fff;
+    padding: 6px 10px;
+    border-radius: 4px;
+    font-size: 14px;
+    white-space: nowrap;
+    pointer-events: none;
+    z-index: 9999;
+}
