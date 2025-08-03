@@ -104,16 +104,3 @@ class EditGradeView(View):
         return render(request, 'form.html', {'form': form})
 
     #TODO assign subject view
-class AssignSubject(View):
-    def get(self, request):
-        form = AddSubjectToTeacherForm()
-        return render(request, 'form.html', {'form': form})
-
-    def post(self, request):
-        form = AddSubjectToTeacherForm(request.POST)
-        if form.is_valid():
-            teacher = form.cleaned_data['teacher']
-            subject = form.cleaned_data['subject']
-            teacher.subject.set(subject)
-            return redirect('home',)
-        return render(request, 'form.html', {'form': form})

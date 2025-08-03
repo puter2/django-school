@@ -41,6 +41,7 @@ class EditTeacherForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         user = kwargs.get('instance')
         super().__init__(*args, **kwargs)
+        #if user is not teacher do not display extra field
         if user.role.role != 'teacher':
             self.fields.pop('subject', None)
         else:

@@ -17,9 +17,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.views.generic import TemplateView
-from accounts.views import LoginView, LogoutView, RegisterView, DeleteUserView, EditUserView
+from accounts.views import LoginView, LogoutView, RegisterView, DeleteUserView, EditUserView, AssignSubject
 from school.views import GradesView, AddGradeView, AddSubjectView, ShowUsersView, DeleteGradeView, \
-    EditGradeView, AssignSubject
+    EditGradeView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
