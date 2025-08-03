@@ -8,7 +8,6 @@
             <a href="{% url 'add_grade' %}">add grade</a>
         {% elif user.role.role == 'admin'%}
             <a href="{% url 'show_users' %}">show users</a>
-            <a href="{% url 'assign_user_role' %}">assign users</a>
             <a href="{% url 'register' %}">register new user</a>
             <a href="{% url 'add_subject' %}">add new subject</a>
             <a href="{% url 'assign_subject' %}">assign subject to teacher</a>

@@ -1,10 +1,14 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
+from django.template.defaultfilters import first
 from django.views import View
 
-from accounts.forms import LoginForm, RegisterForm, RoleForm
+from accounts.forms import LoginForm, RegisterForm, RoleForm, EditTeacherForm
 from accounts.models import Role
+from school.conftest import subjects
+from school.forms import AddSubjectToTeacherForm
+from school.models import Teacher
 
 
 # Create your views here.
@@ -62,14 +66,20 @@ class DeleteUserView(View):
 class EditUserView(View):
     def get(self, request, pk):
         user = User.objects.get(pk=pk)
-        return render(request, 'edit_user_form.html', {'cur_user': user})
+        form = EditTeacherForm(instance=user)
+        return render(request, 'form.html', {'form': form})
 
     def post(self, request, pk):
         user = User.objects.get(pk=pk)
-        first_name = request.POST.get('first_name')
-        last_name = request.POST.get('last_name')
-        user.first_name = first_name
-        user.last_name = last_name
-        user.save()
-        return redirect('show_users')
+        form = EditTeacherForm(request.POST,instance=user)
+        if form.is_valid():
+            first_name = form.cleaned_data['first_name']
+            last_name = form.cleaned_data['last_name']
+            user.first_name = first_name
+            user.last_name = last_name
+            if user.role.role == 'teacher':
+                subjects = form.cleaned_data['subject']
+                Teacher.objects.get(user=user).subject.set(subjects)
+            return redirect('show_users')
+        return render(request, 'form.html', {'form': form})
 
