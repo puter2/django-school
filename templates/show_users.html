@@ -31,7 +31,7 @@
             <tr>
                 <td>{{ u.first_name }} {{ u.last_name }}</td>
                 <td>{{ u.role }}</td>
-                {% if request.user.role|lower == "admin" %}
+                {% if user.groups.all.0.name  == 'Admins' %}
                 <td><a href="{% url 'edit_user' u.id %}">edit</a></td>
                 <td><a href="{% url 'delete_user' u.id %}">delete</a></td>
                 {% endif %}

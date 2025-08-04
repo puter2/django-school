@@ -1,11 +1,9 @@
 from django.contrib import admin
 
-from accounts.models import Role
-from school.models import Student, Teacher, Grade, Subject
+from school.models import Grade, Subject, Grade_object, Klass
 
 # Register your models here.
-admin.site.register(Student)
-admin.site.register(Teacher)
 admin.site.register(Grade)
-admin.site.register(Role)
 admin.site.register(Subject)
+admin.site.register(Grade_object)
+admin.site.register(Klass)

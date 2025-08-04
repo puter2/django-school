@@ -4,51 +4,51 @@ from django.shortcuts import render, redirect
 from django.views import View
 
 from school.forms import GradesForm, AddSubjectForm, AddSubjectToTeacherForm
-from school.models import Grade, Student, Teacher
+from school.models import Grade
 
 #TODO credential check
 
 # Create your views here.
+#TODO fix
 class GradesView(View):
 #TODO refactor
     def get(self, request):
         user = request.user
         name = request.GET.get('name')
-        if user.role.role == 'teacher':
-            teacher = Teacher.objects.get(user=user)
-            grades = Grade.objects.filter(teacher=teacher)
-            grades = grades.filter(Q(student__user__first_name__contains=name) | Q(student__user__last_name__contains=name)) if name else grades
-            return render(request, 'show_grades.html', {'grades': grades})
-        elif user.role.role == 'student':
-            student = Student.objects.get(user=user)
-            grades = Grade.objects.filter(student=student)
-            grades = grades.filter(Q(teacher__user__first_name__contains=name) | Q(
-                teacher__user__last_name__contains=name)) if name else grades
-            return render(request, 'show_grades.html', {'grades': grades})
+        # if user.role.role == 'teacher':
+        #     # teacher = Teacher.objects.get(user=user)
+        #     # grades = Grade.objects.filter(teacher=teacher)
+        #     grades = grades.filter(Q(student__user__first_name__contains=name) | Q(student__user__last_name__contains=name)) if name else grades
+        #     return render(request, 'show_grades.html', {'grades': grades})
+        # elif user.role.role == 'student':
+        #     # student = Student.objects.get(user=user)
+        #     # grades = Grade.objects.filter(student=student)
+        #     grades = grades.filter(Q(teacher__user__first_name__contains=name) | Q(
+        #         teacher__user__last_name__contains=name)) if name else grades
+        #     return render(request, 'show_grades.html', {'grades': grades})
         return redirect('home')
 
 #TODO check if grade is valid
 class AddGradeView(View):
 
     def get(self, request):
-        teacher = Teacher.objects.get(user=request.user)
-        form = GradesForm(teacher=teacher)
+        form = GradesForm()
         return render(request,'form.html', {'form': form})
-
-    def post(self, request):
-        teacher = Teacher.objects.get(user=request.user)
-        print(teacher)
-        form = GradesForm(request.POST, teacher=teacher)
-        if form.is_valid():
-            print('a')
-            grade = form.cleaned_data['grade']
-            student = form.cleaned_data['student']
-            subject = form.cleaned_data['subject']
-            new_grade = Grade.objects.create(grade=grade, student=student, teacher=teacher, subject=subject)
-            new_grade.save()
-            return redirect('home',)
-        print('nie poszloi')
-        return render(request, 'form.html', {'form': form})
+    #
+    # def post(self, request):
+    #     teacher = Teacher.objects.get(user=request.user)
+    #     print(teacher)
+    #     form = GradesForm(request.POST, teacher=teacher)
+    #     if form.is_valid():
+    #         print('a')
+    #         grade = form.cleaned_data['grade']
+    #         student = form.cleaned_data['student']
+    #         subject = form.cleaned_data['subject']
+    #         new_grade = Grade.objects.create(grade=grade, student=student, teacher=teacher, subject=subject)
+    #         new_grade.save()
+    #         return redirect('home',)
+    #     print('nie poszloi')
+    #     return render(request, 'form.html', {'form': form})
 
 #TODO testy
 

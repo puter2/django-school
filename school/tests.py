@@ -79,3 +79,4 @@ def test_adding_grades_view_post(students_role, teachers_subjects):
         assert response.status_code == 302
         assert Grade.objects.filter(student=student_user.id).exists()
 
+#TODO testuj kazdy widok
