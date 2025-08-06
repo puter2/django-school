@@ -5,7 +5,7 @@ from django.views import View
 
 from school.conftest import subjects
 from school.forms import GradesForm, AddSubjectForm, AddSubjectToTeacherForm, AddGradeObjectForm
-from school.models import Grade, Subject
+from school.models import Grade, Subject, GradeObject
 
 
 #TODO credential check
@@ -120,3 +120,34 @@ class CreateGradeObjectView(View):
             form.save()
             return redirect('home')
         return render(request, 'form.html', {'form': form})
+
+class AddGradesView(View):
+    def get(self, request):
+        students = User.objects.filter(groups__name__contains='student')
+        user = request.user
+        grade_obj = GradeObject.objects.filter(subject__teacher=user)
+        return render(request, 'add_grades.html',
+                      {
+                          'students': students,
+                          'grade_obj': grade_obj,
+                          'selected_grade_obj': True
+                      }
+                      )
+
+    def post(self, request):
+        students = User.objects.filter(groups__name__contains='student')
+        user = request.user
+        grade_obj_name = request.POST.get('grade_obj')
+        grade_obj = GradeObject.objects.get(name=grade_obj_name)
+        for student in students:
+            grade_val = request.POST.get(str(student.id))
+            print(student.id, grade_val)
+            if grade_val:
+                print('a')
+                new_grade = Grade.objects.create(student=student,
+                                                 grade=grade_val,
+                                                 teacher=user,
+                                                 topic=grade_obj)
+                new_grade.save()
+        return redirect('home')
+

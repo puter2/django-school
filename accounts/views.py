@@ -78,6 +78,7 @@ class EditUserView(View):
             user.last_name = last_name
             groups = form.cleaned_data['groups']
             user.groups.set(groups)
+            user.save()
             return redirect('show_users')
         return render(request, 'form.html', {'form': form})
 

@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div>
+    <form method="post">
+    {% csrf_token %}
+    <select name="grade_obj">
+        {% for obj in grade_obj %}
+            <option value="{{ obj.name }}">{{ obj.name }}</option>
+        {% endfor %}
+    </select>
+    {% if selected_grade_obj %}
+        <ul>
+            {% for student in students %}
+                <li style="padding-top: 5px">
+                    <label style="margin-right: 10px">
+                        {{ student.first_name }} {{ student.last_name }}:
+                    </label>
+                    <input type="text" name="{{ student.id }}">
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    <input type="submit">
+    </form>
+</div>
+
+{% endblock %}
