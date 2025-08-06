@@ -3,8 +3,10 @@ from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.views import View
 
-from school.forms import GradesForm, AddSubjectForm, AddSubjectToTeacherForm
-from school.models import Grade
+from school.conftest import subjects
+from school.forms import GradesForm, AddSubjectForm, AddSubjectToTeacherForm, AddGradeObjectForm
+from school.models import Grade, Subject
+
 
 #TODO credential check
 
@@ -70,11 +72,12 @@ class ShowUsersView(View):
     def get(self, request):
         users = User.objects.all()
         name = request.GET.get('name')
-        role = request.GET.get('role')
+        group = request.GET.get('group')
         if name:
             users = users.filter(Q(first_name__icontains=name) | Q(last_name__icontains=name))
-        if role:
-            users = users.filter(role__role=role)
+        if group:
+            #TODO fix
+            users = users.filter(groups=group)
         return render(request, 'show_users.html', {'users': users})
 
 
@@ -104,3 +107,16 @@ class EditGradeView(View):
         return render(request, 'form.html', {'form': form})
 
 
+class CreateGradeObjectView(View):
+    def get(self, request):
+        user = request.user
+        form = AddGradeObjectForm(user=user)
+        return render(request, 'form.html', {'form': form})
+
+    def post(self, request):
+        user = request.user
+        form = AddGradeObjectForm(request.POST, user=user)
+        if form.is_valid():
+            form.save()
+            return redirect('home')
+        return render(request, 'form.html', {'form': form})

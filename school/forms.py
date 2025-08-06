@@ -1,6 +1,7 @@
 from django import forms
 
-from school.models import Grade, Subject
+from school.conftest import subjects
+from school.models import Grade, Subject, GradeObject
 
 
 class GradesForm(forms.ModelForm):
@@ -30,3 +31,14 @@ class AddSubjectToTeacherForm(forms.Form):
         widget=forms.CheckboxSelectMultiple,
         required=True,
         label='Subject',)
+
+class AddGradeObjectForm(forms.ModelForm):
+    class Meta:
+        model = GradeObject
+        fields = ['name', 'weight', 'subject']
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user')
+        super().__init__(*args, **kwargs)
+        if user.is_authenticated:
+            self.fields['subject'].queryset = Subject.objects.filter(teacher=user)

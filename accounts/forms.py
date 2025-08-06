@@ -21,17 +21,11 @@ class RegisterForm(forms.ModelForm):
         model = User
         fields = ['username', 'password1', 'password2', 'first_name', 'last_name']
 
-# #TODO fix
-# class EditTeacherForm(forms.ModelForm):
-#     subject = forms.ModelMultipleChoiceField(
-#         queryset=Subject.objects.all(),
-#         widget=forms.CheckboxSelectMultiple,
-#         required=True,
-#         label='Subject',)
-#
-#     class Meta:
-#         model = User
-#         fields = ['first_name', 'last_name']
+#TODO change form depending on group
+class EditUserForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'groups']
 
 
 

@@ -6,6 +6,7 @@
             <a href="{% url 'grades' %}">show grades</a>
             <a href="{% url 'show_users' %}">show users</a>
             <a href="{% url 'add_grade' %}">add grade</a>
+            <a href="{% url 'create_grade_object' %}">add new test</a>
         {% elif user.groups.all.0.name  == 'Admins'%}
             <a href="{% url 'show_users' %}">show users</a>
             <a href="{% url 'register' %}">register new user</a>

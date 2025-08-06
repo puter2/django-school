@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 from django.template.defaultfilters import first
 from django.views import View
 
-from accounts.forms import LoginForm, RegisterForm, GroupForm #EditTeacherForm,
+from accounts.forms import LoginForm, RegisterForm, GroupForm, EditUserForm  # EditTeacherForm,
 from school.conftest import subjects
 from school.forms import AddSubjectToTeacherForm
 
@@ -65,24 +65,24 @@ class DeleteUserView(View):
 class EditUserView(View):
     def get(self, request, pk):
         user = User.objects.get(pk=pk)
-        form = 'a'
+        form = EditUserForm(instance=user)
         return render(request, 'form.html', {'form': form})
-#TODO fix
-    # def post(self, request, pk):
-    #     user = User.objects.get(pk=pk)
-    #     form = EditTeacherForm(request.POST,instance=user)
-    #     if form.is_valid():
-    #         first_name = form.cleaned_data['first_name']
-    #         last_name = form.cleaned_data['last_name']
-    #         user.first_name = first_name
-    #         user.last_name = last_name
-    #         if user.role.role == 'teacher':
-    #             subjects = form.cleaned_data['subject']
-    #             Teacher.objects.get(user=user).subject.set(subjects)
-    #         return redirect('show_users')
-    #     return render(request, 'form.html', {'form': form})
+
+    def post(self, request, pk):
+        user = User.objects.get(pk=pk)
+        form = EditUserForm(request.POST,instance=user)
+        if form.is_valid():
+            first_name = form.cleaned_data['first_name']
+            last_name = form.cleaned_data['last_name']
+            user.first_name = first_name
+            user.last_name = last_name
+            groups = form.cleaned_data['groups']
+            user.groups.set(groups)
+            return redirect('show_users')
+        return render(request, 'form.html', {'form': form})
 
 
+#TODO fix for current models
 class AssignSubject(View):
     def get(self, request):
         form = AddSubjectToTeacherForm()
