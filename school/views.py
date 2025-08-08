@@ -11,12 +11,48 @@ from school.models import Grade, Subject, GradeObject
 #TODO credential check
 
 # Create your views here.
-#TODO fix
+#TODO add easy editing, implement search
 class GradesView(View):
-#TODO refactor
     def get(self, request):
         user = request.user
         name = request.GET.get('name')
+        if user.is_authenticated:
+            # print(user.groups.all())
+            if user.groups.all()[0].name == 'Students':
+                subjects = Subject.objects.all()
+                grade_subject = []
+                # subject : grades
+                for subject in subjects:
+                    grades = Grade.objects.filter(student=user, topic__subject=subject)
+                    grade_subject.append({
+                        'subject': subject,
+                        'grades': grades
+                    })
+                return render(request, 'show_grades_student.html', {'grade_subject': grade_subject})
+
+                grades = Grade.objects.filter(student=user)
+                return render(request, 'show_grades.html', {'grades': grades})
+            if user.groups.all()[0].name == 'Teachers':
+                topics = GradeObject.objects.all()
+                students = User.objects.filter(groups__name='Students')
+                grades_data = []
+                for student in students:
+                    student_grades = Grade.objects.filter(student=student).select_related('topic')
+                    topic_grades = []
+                    for topic in topics:
+                        grade = None
+                        for g in student_grades:
+                            if g.topic_id == topic.id:
+                                grade = g
+                                break
+                        topic_grades.append(grade)
+                    grades_data.append({
+                        'student': student,
+                        'grades': topic_grades,
+                    })
+                print(grades_data)
+                return render(request, 'show_grades_teacher.html', {'grades_data': grades_data, 'topics': topics, 'students': students})
+
         # if user.role.role == 'teacher':
         #     # teacher = Teacher.objects.get(user=user)
         #     # grades = Grade.objects.filter(teacher=teacher)
@@ -30,7 +66,7 @@ class GradesView(View):
         #     return render(request, 'show_grades.html', {'grades': grades})
         return redirect('home')
 
-#TODO check if grade is valid
+#TODO remove
 class AddGradeView(View):
 
     def get(self, request):

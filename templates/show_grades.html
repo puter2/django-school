@@ -12,7 +12,7 @@
     <thead>
     <th>grade</th>
     <th>user</th>
-    <th>subject</th>
+    <th>topic</th>
     {% if user.groups.all.0.name  == 'Teachers' %}
         <th>Edit</th>
         <th>Delete</th>
@@ -30,10 +30,10 @@
             {% endif %}
         {% if user.groups.all.0.name  == 'Students' %}
             <td>{{ grade.teacher }}</td>
-            <td>{{ grade.subject }}</td>
+            <td>{{ grade.topic }}</td>
         {% elif user.groups.all.0.name  == 'Teachers' %}
             <td>{{ grade.student }}</td>
-            <td>{{ grade.subject }}</td>
+            <td>{{ grade.topic }}</td>
             <td><a href="{% url 'edit_grade' grade.id %}">Edit</a></td>
             <td><a href="{% url 'delete_grade' grade.id %}">Delete</a></td>
         {% endif %}

@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{%  block content %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'tooltip.css' %}">
+    <script src="{% static 'tooltips.js' %}"></script>
+    <form method="get">
+        <input type="text" name="name">
+        <input type="submit">
+    </form>
+<table>
+    <thead>
+    <th>user</th>
+    {% for topic in topics %}
+        <th>{{ topic.name }}</th>
+    {% endfor %}
+    </thead>
+    <tbody>
+    {% for entry in grades_data %}
+        <tr>
+            <td>{{ entry.student }}</td>
+            {% for grade in entry.grades %}
+                {% if grade %}
+                <td class="tooltip" data-tooltip="{{ grade.topic.subject }}
+{{ grade.description }}">{{ grade.grade }}</td>
+                {% else %}
+                <td>-</td>
+                {% endif %}
+            {% endfor %}
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}
