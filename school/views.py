@@ -11,11 +11,10 @@ from school.models import Grade, Subject, GradeObject
 #TODO credential check
 
 # Create your views here.
-#TODO add easy editing, implement search
+#TODO add easy editing, add average, implement search
 class GradesView(View):
     def get(self, request):
         user = request.user
-        name = request.GET.get('name')
         if user.is_authenticated:
             # print(user.groups.all())
             if user.groups.all()[0].name == 'Students':
@@ -29,11 +28,11 @@ class GradesView(View):
                         'grades': grades
                     })
                 return render(request, 'show_grades_student.html', {'grade_subject': grade_subject})
-
-                grades = Grade.objects.filter(student=user)
-                return render(request, 'show_grades.html', {'grades': grades})
             if user.groups.all()[0].name == 'Teachers':
+                filter_subject = request.GET.get('subject')
                 topics = GradeObject.objects.all()
+                if filter_subject:
+                    topics = topics.filter(subject=filter_subject)
                 students = User.objects.filter(groups__name='Students')
                 grades_data = []
                 for student in students:
@@ -50,20 +49,7 @@ class GradesView(View):
                         'student': student,
                         'grades': topic_grades,
                     })
-                print(grades_data)
                 return render(request, 'show_grades_teacher.html', {'grades_data': grades_data, 'topics': topics, 'students': students})
-
-        # if user.role.role == 'teacher':
-        #     # teacher = Teacher.objects.get(user=user)
-        #     # grades = Grade.objects.filter(teacher=teacher)
-        #     grades = grades.filter(Q(student__user__first_name__contains=name) | Q(student__user__last_name__contains=name)) if name else grades
-        #     return render(request, 'show_grades.html', {'grades': grades})
-        # elif user.role.role == 'student':
-        #     # student = Student.objects.get(user=user)
-        #     # grades = Grade.objects.filter(student=student)
-        #     grades = grades.filter(Q(teacher__user__first_name__contains=name) | Q(
-        #         teacher__user__last_name__contains=name)) if name else grades
-        #     return render(request, 'show_grades.html', {'grades': grades})
         return redirect('home')
 
 #TODO remove
@@ -112,8 +98,8 @@ class ShowUsersView(View):
         if name:
             users = users.filter(Q(first_name__icontains=name) | Q(last_name__icontains=name))
         if group:
-            #TODO fix
-            users = users.filter(groups=group)
+            #TODO make selecting group more dynamic
+            users = users.filter(groups__name__contains=group)
         return render(request, 'show_users.html', {'users': users})
 
 

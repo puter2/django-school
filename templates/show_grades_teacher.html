@@ -5,8 +5,11 @@
     <link rel="stylesheet" href="{% static 'tooltip.css' %}">
     <script src="{% static 'tooltips.js' %}"></script>
     <form method="get">
-        <input type="text" name="name">
-        <input type="submit">
+        <input type="text" name="subject" placeholder="subject">
+        <select name="class">
+            <option value="placeholder">placeholder</option>
+        </select>
+        <input type="submit" value="Filter">
     </form>
 <table>
     <thead>

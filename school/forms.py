@@ -32,6 +32,14 @@ class AddSubjectToTeacherForm(forms.Form):
         required=True,
         label='Subject',)
 
+    def __init__(self, *args, **kwargs):
+        teacher = kwargs.pop('teacher')
+        super().__init__(*args, **kwargs)
+
+        if teacher:
+            self.fields['subject'].initial = Subject.objects.filter(teacher=teacher)
+
+
 class AddGradeObjectForm(forms.ModelForm):
     class Meta:
         model = GradeObject

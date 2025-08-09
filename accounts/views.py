@@ -2,11 +2,13 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User, Group
 from django.shortcuts import render, redirect
 from django.template.defaultfilters import first
+from django.utils.archive import extract
 from django.views import View
 
 from accounts.forms import LoginForm, RegisterForm, GroupForm, EditUserForm  # EditTeacherForm,
 from school.conftest import subjects
 from school.forms import AddSubjectToTeacherForm
+from school.models import Subject
 
 
 # Create your views here.
@@ -66,12 +68,22 @@ class EditUserView(View):
     def get(self, request, pk):
         user = User.objects.get(pk=pk)
         form = EditUserForm(instance=user)
-        return render(request, 'form.html', {'form': form})
-
+        extra_form = None
+        if user.groups.all()[0].name == 'Teachers':
+            extra_form = AddSubjectToTeacherForm(teacher=user)
+        elif user.groups.all()[0].name == 'Students':
+            extra_form = None
+        forms = [form, extra_form]
+        return render(request, 'form.html', {'form': forms, 'multiple' : True})
+#TODO student side
     def post(self, request, pk):
         user = User.objects.get(pk=pk)
         form = EditUserForm(request.POST,instance=user)
-        if form.is_valid():
+        if user.groups.all()[0].name == 'Teachers':
+            extra_form = AddSubjectToTeacherForm(request.POST, teacher=user)
+        else:
+            extra_form = AddSubjectToTeacherForm(request.POST, teacher=user)
+        if form.is_valid() and extra_form.is_valid():
             first_name = form.cleaned_data['first_name']
             last_name = form.cleaned_data['last_name']
             user.first_name = first_name
@@ -79,6 +91,13 @@ class EditUserView(View):
             groups = form.cleaned_data['groups']
             user.groups.set(groups)
             user.save()
+
+            subjects = extra_form.cleaned_data['subject']
+            for subject in Subject.objects.all():
+                subject.teacher.remove(user)
+            for subject in subjects:
+                Subject.objects.get(pk=subject.pk).teacher.add(user)
+
             return redirect('show_users')
         return render(request, 'form.html', {'form': form})
 
