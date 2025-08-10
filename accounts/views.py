@@ -7,8 +7,8 @@ from django.views import View
 
 from accounts.forms import LoginForm, RegisterForm, GroupForm, EditUserForm  # EditTeacherForm,
 from school.conftest import subjects
-from school.forms import AddSubjectToTeacherForm
-from school.models import Subject
+from school.forms import AddSubjectToTeacherForm, CreateClassForm
+from school.models import Subject, Klass
 
 
 # Create your views here.
@@ -75,13 +75,13 @@ class EditUserView(View):
             extra_form = None
         forms = [form, extra_form]
         return render(request, 'form.html', {'form': forms, 'multiple' : True})
-#TODO student side
     def post(self, request, pk):
         user = User.objects.get(pk=pk)
         form = EditUserForm(request.POST,instance=user)
         if user.groups.all()[0].name == 'Teachers':
             extra_form = AddSubjectToTeacherForm(request.POST, teacher=user)
         else:
+            #TODO student side
             extra_form = AddSubjectToTeacherForm(request.POST, teacher=user)
         if form.is_valid() and extra_form.is_valid():
             first_name = form.cleaned_data['first_name']
@@ -101,7 +101,7 @@ class EditUserView(View):
             return redirect('show_users')
         return render(request, 'form.html', {'form': form})
 
-
+#absolete
 #TODO fix for current models
 class AssignSubject(View):
     def get(self, request):
@@ -117,3 +117,22 @@ class AssignSubject(View):
             return redirect('home',)
         return render(request, 'form.html', {'form': form})
 
+class CreateClass(View):
+    def get(self, request):
+        form = CreateClassForm()
+        students = User.objects.filter(groups__name='Students')
+        #TODO zrob templatke, gdzie bedzie lista uzytkownikow, podobne jak przy wystawianiu ocen
+        return render(request, 'create_class.html', {'form': form, 'students': students})
+
+    def post(self, request):
+        form = CreateClassForm(request.POST)
+        students = User.objects.filter(groups__name='Students')
+        if form.is_valid():
+            new_class = Klass.objects.create(class_name=form.cleaned_data['class_name'])
+            for student in students:
+                belongs = request.POST.get(f'{student.id}')
+                if belongs:
+                    new_class.student.add(student)
+            new_class.save()
+            return redirect('home')
+        return render(request, 'create_class.html', {'form': form, 'students': students})

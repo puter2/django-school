@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.views.generic import TemplateView
-from accounts.views import LoginView, LogoutView, RegisterView, DeleteUserView, EditUserView, AssignSubject
+from accounts.views import LoginView, LogoutView, RegisterView, DeleteUserView, EditUserView, AssignSubject, CreateClass
 from school.forms import AddGradeObjectForm
 from school.views import GradesView, AddGradeView, AddSubjectView, ShowUsersView, DeleteGradeView, \
     EditGradeView, CreateGradeObjectView, AddGradesView
@@ -39,5 +39,6 @@ urlpatterns = [
     path("assign_subject", AssignSubject.as_view(), name="assign_subject"),
     path("create_grade_object", CreateGradeObjectView.as_view(), name="create_grade_object"),
     path("add_grades", AddGradesView.as_view(), name="add_grades"),
+    path("add_class", CreateClass.as_view(), name="add_class"),
 
 ]

@@ -8,7 +8,7 @@ from django.db.models import ManyToManyField
 
 class Klass(models.Model):
     student = ManyToManyField(User)
-    class_name = models.CharField(max_length=100, db_column='class', verbose_name='Class', null=True)
+    class_name = models.CharField(max_length=100, db_column='class', verbose_name='Class', null=True, unique=True)
     def __str__(self):
         return f'{self.class_name}'
 

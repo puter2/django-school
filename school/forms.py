@@ -1,7 +1,7 @@
 from django import forms
 
 from school.conftest import subjects
-from school.models import Grade, Subject, GradeObject
+from school.models import Grade, Subject, GradeObject, Klass
 
 
 class GradesForm(forms.ModelForm):
@@ -50,3 +50,8 @@ class AddGradeObjectForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         if user.is_authenticated:
             self.fields['subject'].queryset = Subject.objects.filter(teacher=user)
+
+class CreateClassForm(forms.ModelForm):
+    class Meta:
+        model = Klass
+        fields = ['class_name']
