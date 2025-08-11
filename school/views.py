@@ -10,6 +10,8 @@ from school.models import Grade, Subject, GradeObject
 
 #TODO credential check
 
+#sprawdzenie czy sa nowe wiadomosci, context processor
+
 # Create your views here.
 #TODO add easy editing, add average, implement search
 class GradesView(View):

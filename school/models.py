@@ -12,11 +12,25 @@ class Klass(models.Model):
     def __str__(self):
         return f'{self.class_name}'
 
-class Subject(models.Model):
+class Subject(models.Model):#
+
     subject = models.CharField(max_length=100, unique=True, verbose_name='Subject')
     teacher = models.ManyToManyField(User, null=True, verbose_name='Teacher')
     def __str__(self):
         return self.subject
+
+#model klasa-przedmiot
+#jaka klasa jaki nauczyciel
+
+#subject
+#teacher - klucz obcy
+#klasa
+#rozszerzenie ma inne przedmioty np
+
+class Subject2(models.Model):
+    name = models.CharField(max_length=100, unique=False, verbose_name='Subject')
+    teacher = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Teacher')
+    klass = models.ForeignKey(Klass, on_delete=models.CASCADE, verbose_name='Class', db_column='class')
 
 class GradeObject(models.Model):
     name = models.CharField(max_length=100)
