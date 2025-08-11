@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from school.models import Grade, Subject, GradeObject, Klass
+from school.models import Grade, GradeObject, Klass, Subject
 
 # Register your models here.
 admin.site.register(Grade)

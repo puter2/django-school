@@ -1,7 +1,7 @@
 from django import forms
 
 from school.conftest import subjects
-from school.models import Grade, Subject, GradeObject, Klass
+from school.models import Grade, Subject, GradeObject, Klass, Subject
 
 
 class GradesForm(forms.ModelForm):
@@ -16,12 +16,6 @@ class GradesForm(forms.ModelForm):
     #     super().__init__(*args, **kwargs)
     #     if teacher:
     #         self.fields['subject'].queryset = teacher.subject.all()
-
-class AddSubjectForm(forms.ModelForm):
-
-    class Meta:
-        model = Subject
-        fields = ['subject']
 
 class AddSubjectToTeacherForm(forms.Form):
 
@@ -55,3 +49,8 @@ class CreateClassForm(forms.ModelForm):
     class Meta:
         model = Klass
         fields = ['class_name']
+
+class AddSubjectForm(forms.ModelForm):
+    class Meta:
+        model = Subject
+        fields = ['name', 'teacher', 'klass']

@@ -7,7 +7,7 @@ from django.views import View
 
 from accounts.forms import LoginForm, RegisterForm, GroupForm, EditUserForm  # EditTeacherForm,
 from school.conftest import subjects
-from school.forms import AddSubjectToTeacherForm, CreateClassForm
+from school.forms import AddSubjectToTeacherForm, CreateClassForm, AddSubjectForm
 from school.models import Subject, Klass
 
 
@@ -101,19 +101,17 @@ class EditUserView(View):
             return redirect('show_users')
         return render(request, 'form.html', {'form': form})
 
-#absolete
+
 #TODO fix for current models
 class AssignSubject(View):
     def get(self, request):
-        form = AddSubjectToTeacherForm()
+        form = AddSubjectForm()
         return render(request, 'form.html', {'form': form})
 
     def post(self, request):
-        form = AddSubjectToTeacherForm(request.POST)
+        form = AddSubjectForm(request.POST)
         if form.is_valid():
-            teacher = form.cleaned_data['teacher']
-            subject = form.cleaned_data['subject']
-            teacher.subject.set(subject)
+            form.save()
             return redirect('home',)
         return render(request, 'form.html', {'form': form})
 
@@ -136,3 +134,4 @@ class CreateClass(View):
             new_class.save()
             return redirect('home')
         return render(request, 'create_class.html', {'form': form, 'students': students})
+
