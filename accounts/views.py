@@ -79,9 +79,10 @@ class EditUserView(View):
         user = User.objects.get(pk=pk)
         form = EditUserForm(request.POST,instance=user)
         if user.groups.all()[0].name == 'Teachers':
+            #TODO teacher side
+            #TODO admin?
             extra_form = AddSubjectToTeacherForm(request.POST, student=user)
         else:
-            #TODO student side
             extra_form = EditStudentClassForm(request.POST, student=user)
         if form.is_valid() and extra_form.is_valid():
             first_name = form.cleaned_data['first_name']
@@ -108,11 +109,8 @@ class EditUserView(View):
                     if klass in selected_classes:
                         if not Klass.objects.filter(class_name=klass.class_name, student=user).exists():
                             klass.student.add(user)
-
-
-            # for subject in subjects:
-            #     if Subject.objects.get(id=subject.id):
-            #         pass
+                    else:
+                        klass.student.remove(user)
             return redirect('show_users')
         forms = [form, extra_form]
         return render(request, 'form.html', {'form': forms, 'multiple' : True})
