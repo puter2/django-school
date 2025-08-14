@@ -19,6 +19,7 @@
             {% for grade in object.grades %}
                 <td class="tooltip" data-tooltip="{{ grade.teacher.get_full_name }} &#10 weight: {{ grade.topic.weight }}">{{ grade.grade }}</td>
             {% endfor %}
+            <td class="tooltip" data-tooltip='average'>{{ object.average }}</td>
             </tr>
         {% endfor %}
     </tbody>

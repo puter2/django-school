@@ -66,3 +66,13 @@ class EditStudentClassForm(forms.Form):
         student = kwargs.pop('student')
         super().__init__(*args, **kwargs)
         self.fields['classes'].initial = Klass.objects.filter(student=student)
+
+class SelectSubjectAndClassForm(forms.Form):
+    subject = forms.ModelChoiceField(
+        queryset=Subject.objects.all(),
+        required=False,
+    )
+    Klass = forms.ModelChoiceField(
+        queryset=Klass.objects.all(),
+        required=False,
+    )

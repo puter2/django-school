@@ -4,8 +4,9 @@ from django.shortcuts import render, redirect
 from django.views import View
 
 from school.conftest import subjects
-from school.forms import GradesForm, AddSubjectForm, AddSubjectToTeacherForm, AddGradeObjectForm
-from school.models import Grade, Subject, GradeObject
+from school.forms import GradesForm, AddSubjectForm, AddSubjectToTeacherForm, AddGradeObjectForm, \
+    SelectSubjectAndClassForm
+from school.models import Grade, Subject, GradeObject, Klass
 
 
 #TODO credential check
@@ -20,22 +21,33 @@ class GradesView(View):
         if user.is_authenticated:
             # print(user.groups.all())
             if user.groups.all()[0].name == 'Students':
-                subjects = Subject.objects.all()
+                classes = Klass.objects.filter(student=user)
+                subjects = Subject.objects.filter(klass__in=classes)
                 grade_subject = []
                 # subject : grades
                 for subject in subjects:
                     grades = Grade.objects.filter(student=user, topic__subject=subject)
+                    average = 0
+                    for grade in grades:
+                        average += grade.grade * grade.topic.weight
+                    average = average / len(grades)
                     grade_subject.append({
                         'subject': subject,
-                        'grades': grades
+                        'grades': grades,
+                        'average': average
                     })
                 return render(request, 'show_grades_student.html', {'grade_subject': grade_subject})
             if user.groups.all()[0].name == 'Teachers':
+                klass_id = request.GET.get('Klass')
                 filter_subject = request.GET.get('subject')
                 topics = GradeObject.objects.all()
+                students = User.objects.filter(groups__name='Students')
                 if filter_subject:
                     topics = topics.filter(subject=filter_subject)
-                students = User.objects.filter(groups__name='Students')
+                if klass_id:
+                    topics = topics.filter(subject__klass=klass_id)
+                    klass_obj = Klass.objects.get(id=klass_id)
+                    students = klass_obj.student.all()
                 grades_data = []
                 for student in students:
                     student_grades = Grade.objects.filter(student=student).select_related('topic')
@@ -51,7 +63,7 @@ class GradesView(View):
                         'student': student,
                         'grades': topic_grades,
                     })
-                return render(request, 'show_grades_teacher.html', {'grades_data': grades_data, 'topics': topics, 'students': students})
+                return render(request, 'show_grades_teacher.html', {'grades_data': grades_data, 'topics': topics, 'students': students, 'form': SelectSubjectAndClassForm()})
         return redirect('home')
 
 #TODO remove
