@@ -7,7 +7,7 @@ from django.views import View
 
 from accounts.forms import LoginForm, RegisterForm, GroupForm, EditUserForm  # EditTeacherForm,
 from school.conftest import subjects
-from school.forms import AddSubjectToTeacherForm, CreateClassForm, AddSubjectForm
+from school.forms import AddSubjectToTeacherForm, CreateClassForm, AddSubjectForm, EditStudentClassForm
 from school.models import Subject, Klass
 
 
@@ -72,17 +72,17 @@ class EditUserView(View):
         if user.groups.all()[0].name == 'Teachers':
             extra_form = AddSubjectToTeacherForm(teacher=user)
         elif user.groups.all()[0].name == 'Students':
-            extra_form = None
+            extra_form = EditStudentClassForm(student=user)
         forms = [form, extra_form]
         return render(request, 'form.html', {'form': forms, 'multiple' : True})
     def post(self, request, pk):
         user = User.objects.get(pk=pk)
         form = EditUserForm(request.POST,instance=user)
         if user.groups.all()[0].name == 'Teachers':
-            extra_form = AddSubjectToTeacherForm(request.POST, teacher=user)
+            extra_form = AddSubjectToTeacherForm(request.POST, student=user)
         else:
             #TODO student side
-            extra_form = AddSubjectToTeacherForm(request.POST, teacher=user)
+            extra_form = EditStudentClassForm(request.POST, student=user)
         if form.is_valid() and extra_form.is_valid():
             first_name = form.cleaned_data['first_name']
             last_name = form.cleaned_data['last_name']
@@ -92,14 +92,30 @@ class EditUserView(View):
             user.groups.set(groups)
             user.save()
 
-            subjects = extra_form.cleaned_data['subject']
-            for subject in Subject.objects.all():
-                subject.teacher.remove(user)
-            for subject in subjects:
-                Subject.objects.get(pk=subject.pk).teacher.add(user)
+            if user.groups.all()[0].name == 'Teachers':
+                selected_subjects = extra_form.cleaned_data['subject']
+                print(selected_subjects)
+                teacher_subject = Subject.objects.filter(teacher=user)
+                for subject in teacher_subject:
+                    if subject not in selected_subjects:
+                        subject.delete()
+                for subject in selected_subjects:
+                    if subject not in teacher_subject:
+                        Subject.objects.create(name=subject.name, teacher=user, klass=subject.klass).save()
+            else: #student admin
+                selected_classes = extra_form.cleaned_data['classes']
+                for klass in Klass.objects.all():
+                    if klass in selected_classes:
+                        if not Klass.objects.filter(class_name=klass.class_name, student=user).exists():
+                            klass.student.add(user)
 
+
+            # for subject in subjects:
+            #     if Subject.objects.get(id=subject.id):
+            #         pass
             return redirect('show_users')
-        return render(request, 'form.html', {'form': form})
+        forms = [form, extra_form]
+        return render(request, 'form.html', {'form': forms, 'multiple' : True})
 
 
 #TODO fix for current models

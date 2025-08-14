@@ -54,3 +54,15 @@ class AddSubjectForm(forms.ModelForm):
     class Meta:
         model = Subject
         fields = ['name', 'teacher', 'klass']
+
+class EditStudentClassForm(forms.Form):
+    classes = forms.ModelMultipleChoiceField(
+        queryset=Klass.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
+        required=True,
+        label='classes', )
+
+    def __init__(self, *args, **kwargs):
+        student = kwargs.pop('student')
+        super().__init__(*args, **kwargs)
+        self.fields['classes'].initial = Klass.objects.filter(student=student)
