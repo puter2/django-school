@@ -160,22 +160,31 @@ class CreateGradeObjectView(View):
 
 class AddGradesView(View):
     def get(self, request):
-        students = User.objects.filter(groups__name__contains='student')
         user = request.user
         grade_obj = GradeObject.objects.filter(subject__teacher=user)
-        return render(request, 'add_grades.html',
-                      {
-                          'students': students,
-                          'grade_obj': grade_obj,
-                          'selected_grade_obj': True
-                      }
-                      )
+        selected_grade_obj = request.GET.get('grade_obj',False)
+        if not selected_grade_obj:
+            return render(request, 'add_grades2.html',
+                          {
+                              'grade_obj': grade_obj,
+                              'selected_grade_obj': selected_grade_obj,
+                          }
+                          )
+        else:
+            students = GradeObject.objects.get(name=selected_grade_obj).subject.klass.student.all()
+            return render(request, 'add_grades2.html',
+                          {
+                              'students': students,
+                              'grade_obj': grade_obj,
+                              'selected_grade_obj': selected_grade_obj,
+                          }
+                          )
 
     def post(self, request):
-        students = User.objects.filter(groups__name__contains='student')
+        grade_obj_name = request.GET.get('grade_obj')
         user = request.user
-        grade_obj_name = request.POST.get('grade_obj')
         grade_obj = GradeObject.objects.get(name=grade_obj_name)
+        students = grade_obj.subject.klass.student.all()
         for student in students:
             grade_val = request.POST.get(str(student.id))
             print(student.id, grade_val)
