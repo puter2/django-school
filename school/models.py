@@ -36,3 +36,6 @@ class Grade(models.Model):
     def __str__(self):
         return f'{self.grade} {self.topic} {self.teacher}'
 
+
+
+

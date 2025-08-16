@@ -1,11 +1,12 @@
 {% extends 'base.html' %}
 
 {% block content %}
+    {% load static %}
+    <script src="{% static 'tableFilter.js' %}"></script>
 	<form method="post">
     {% csrf_token %}
     {{ form }}
     <div>
-        {% csrf_token %}
         <table>
             <thead>
             <tr>
@@ -15,7 +16,7 @@
             </thead>
             {% for student in students %}
                 <tr>
-                    <td>{{ student }}</td>
+                    <td>{{ student.first_name }} {{ student.last_name }}</td>
                     <td>
                         <input type="checkbox" name="{{ student.id }}">
                     </td>
