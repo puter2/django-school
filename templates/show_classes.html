@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {{ classes }}
+	<table>
+        <thead>
+        <th>class</th>
+        <th>number of students</th>
+        </thead>
+    {% for obj in classes %}
+        <tr>
+        <td>{{ obj.class.class_name }}</td>
+        <td>{{ obj.number_of_students }}</td>
+        </tr>
+    {% endfor %}
+    </table>
+{% endblock %}

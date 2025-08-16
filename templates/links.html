@@ -14,6 +14,7 @@
             <a href="{% url 'add_subject' %}">add new subject</a>
             <a href="{% url 'assign_subject' %}">assign subject to teacher</a>
             <a href="{% url 'add_class' %}">create new class</a>
+            <a href="{% url 'show_classes' %}">show classes</a>
         {% endif %}
     {% else %}
         <a href="{% url 'login' %}">login</a>

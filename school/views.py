@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.db.models import Q
 from django.shortcuts import render, redirect
+from django.template.context_processors import request
 from django.views import View
 
 from school.conftest import subjects
@@ -187,3 +188,11 @@ class AddGradesView(View):
                 new_grade.save()
         return redirect('home')
 
+class ShowClassesView(View):
+    def get(self, request):
+        classes = Klass.objects.all()
+        classes = [{
+            'class': klass,
+            'number_of_students': len(klass.student.all()),
+        } for klass in classes]
+        return render(request, 'show_classes.html', {'classes': classes})

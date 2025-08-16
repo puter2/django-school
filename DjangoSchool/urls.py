@@ -20,7 +20,7 @@ from django.views.generic import TemplateView
 from accounts.views import LoginView, LogoutView, RegisterView, DeleteUserView, EditUserView, AssignSubject, CreateClass
 from school.forms import AddGradeObjectForm
 from school.views import GradesView, AddGradeView, AddSubjectView, ShowUsersView, DeleteGradeView, \
-    EditGradeView, CreateGradeObjectView, AddGradesView
+    EditGradeView, CreateGradeObjectView, AddGradesView, ShowClassesView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -40,5 +40,6 @@ urlpatterns = [
     path("create_grade_object", CreateGradeObjectView.as_view(), name="create_grade_object"),
     path("add_grades", AddGradesView.as_view(), name="add_grades"),
     path("add_class", CreateClass.as_view(), name="add_class"),
+    path("show_classes", ShowClassesView.as_view(), name="show_classes"),
 
 ]
