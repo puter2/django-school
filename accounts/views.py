@@ -6,7 +6,6 @@ from django.utils.archive import extract
 from django.views import View
 
 from accounts.forms import LoginForm, RegisterForm, GroupForm, EditUserForm  # EditTeacherForm,
-from school.conftest import subjects
 from school.forms import AddSubjectToTeacherForm, CreateClassForm, AddSubjectForm, EditStudentClassForm
 from school.models import Subject, Klass
 
@@ -44,6 +43,7 @@ class RegisterView(View):
     def post(self, request):
         user_form = RegisterForm(request.POST)
         group_form = GroupForm(request.POST)
+        print(group_form)
         if user_form.is_valid() and group_form.is_valid():
             user = user_form.save(commit=False)
             user.set_password(user_form.cleaned_data['password1'])

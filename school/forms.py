@@ -1,6 +1,5 @@
 from django import forms
 
-from school.conftest import subjects
 from school.models import Grade, Subject, GradeObject, Klass, Subject
 
 

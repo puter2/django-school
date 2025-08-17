@@ -4,7 +4,6 @@ from django.shortcuts import render, redirect
 from django.template.context_processors import request
 from django.views import View
 
-from school.conftest import subjects
 from school.forms import GradesForm, AddSubjectForm, AddSubjectToTeacherForm, AddGradeObjectForm, \
     SelectSubjectAndClassForm
 from school.models import Grade, Subject, GradeObject, Klass
