@@ -162,7 +162,6 @@ class AddGradesView(View):
         user = request.user
         grade_obj = GradeObject.objects.filter(subject__teacher=user)
         selected_grade_obj = request.GET.get('grade_obj',False)
-        print(f'jestem w get {grade_obj}')
         if not selected_grade_obj:
             return render(request, 'add_grades2.html',
                           {
@@ -172,9 +171,22 @@ class AddGradesView(View):
                           )
         else:
             students = GradeObject.objects.get(name=selected_grade_obj).subject.klass.student.all()
+            grades = Grade.objects.filter(student__in=students, topic__name=selected_grade_obj)
+            # GradeObject.objects.prefetch_related('grade')
+            print(students, grades)
+            students_with_grades = []
+            for student in students:
+                if Grade.objects.filter(student=student, topic__name=selected_grade_obj).exists():
+                    grade = Grade.objects.filter(student=student, topic__name=selected_grade_obj).values('grade')[0]
+                else:
+                    grade = None
+                students_with_grades.append({
+                    'student': student,
+                    'grade': grade,
+                })
             return render(request, 'add_grades2.html',
                           {
-                              'students': students,
+                              'students_with_grades': students_with_grades,
                               'grade_obj': grade_obj,
                               'selected_grade_obj': selected_grade_obj,
                           }

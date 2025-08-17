@@ -8,7 +8,8 @@
 <form method="get">
     <select name="grade_obj">
         {% for obj in grade_obj %}
-            <option value="{{ obj.name }}">{{ obj.name }}</option>
+            <option value="{{ obj.name }}"
+            {% if selected_grade_obj == obj.name %} selected {% endif %}>{{ obj.name }}</option>
         {% endfor %}
     </select>
     <input type="submit">
@@ -21,10 +22,10 @@
         <th>student</th>
         <th>grade</th>
         </thead>
-            {% for student in students %}
+            {% for obj in students_with_grades %}
                 <tr>
-                    <td>{{ student.first_name }} {{ student.last_name }}</td>
-                    <td><input type="text" name="{{ student.id }}"></td>
+                    <td>{{ obj.student.first_name }} {{ obj.student.last_name }}</td>
+                    <td><input type="text" name="{{ obj.student.id }}" value="{{ obj.grade.grade }}"></td>
                 </tr>
             {% endfor %}
         </table>
