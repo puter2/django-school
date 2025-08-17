@@ -84,7 +84,9 @@ class EditUserView(View):
             extra_form = AddSubjectToTeacherForm(request.POST, student=user)
         else:
             extra_form = EditStudentClassForm(request.POST, student=user)
+        print(extra_form.errors)
         if form.is_valid() and extra_form.is_valid():
+            print('a')
             first_name = form.cleaned_data['first_name']
             last_name = form.cleaned_data['last_name']
             user.first_name = first_name

@@ -162,6 +162,7 @@ class AddGradesView(View):
         user = request.user
         grade_obj = GradeObject.objects.filter(subject__teacher=user)
         selected_grade_obj = request.GET.get('grade_obj',False)
+        print(f'jestem w get {grade_obj}')
         if not selected_grade_obj:
             return render(request, 'add_grades2.html',
                           {
@@ -186,9 +187,7 @@ class AddGradesView(View):
         students = grade_obj.subject.klass.student.all()
         for student in students:
             grade_val = request.POST.get(str(student.id))
-            print(student.id, grade_val)
             if grade_val:
-                print('a')
                 new_grade = Grade.objects.create(student=student,
                                                  grade=grade_val,
                                                  teacher=user,

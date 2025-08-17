@@ -33,10 +33,14 @@ def users():
     return lst
 
 @pytest.fixture
-def klasses():
+def klasses(users):
     lst = []
-    lst.append(Klass.objects.create(class_name='test'))
-    lst.append(Klass.objects.create(class_name='test2'))
+    c = Klass.objects.create(class_name='test_class')
+    c.student.add(users[0])
+    lst.append(c)
+    c = Klass.objects.create(class_name='test_class2')
+    c.student.add(users[1])
+    lst.append(c)
     return lst
 
 @pytest.fixture

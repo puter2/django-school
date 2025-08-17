@@ -58,7 +58,7 @@ class EditStudentClassForm(forms.Form):
     classes = forms.ModelMultipleChoiceField(
         queryset=Klass.objects.all(),
         widget=forms.CheckboxSelectMultiple,
-        required=True,
+        required=False,
         label='classes', )
 
     def __init__(self, *args, **kwargs):

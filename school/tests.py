@@ -115,12 +115,27 @@ def test_create_grade_object_view_post(subjects):
 
 
 @pytest.mark.django_db
-def test_add_grades_view_post(grade_objects):
+def test_add_grades_view_post(grade_objects, users):
     c = Client()
-    url = reverse('add_grades', args=[grade_objects[0].name])
-    response = c.post(url,{})
+    c.force_login(users[3])
+    url = reverse('add_grades')
+    # url = reverse('add_grades')
+    response = c.post(f'{url}?grade_obj={grade_objects[0].name}',{'1':1.})
     assert response.status_code == 302
+    assert Grade.objects.filter(topic=grade_objects[0]).exists()
 
+
+@pytest.mark.django_db
+def test_editing_users_view_post(users):
+    c = Client()
+    url = reverse('edit_user', args=[users[0].id])
+    response = c.post(f'{url}', {'first_name':'edited',
+                                 'last_name':'edited',
+                                 'groups':Group.objects.get(name='Students').id,
+                                 })
+    assert response.status_code == 302
+    assert User.objects.filter(username=users[0]).exists()
+    assert User.objects.filter(username=users[0])[0].first_name == 'edited'
 
 # @pytest.mark.django_db
 # def test_adding_grades_view_post(students_role, teachers_subjects):
