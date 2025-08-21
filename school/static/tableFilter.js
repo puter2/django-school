@@ -1,9 +1,8 @@
 
 function tableFilter(){
-    let table = document.getElementsByTagName('table')
     let input = document.getElementById('searchbar')
     let filter = input.value.toLowerCase();
-    let rows = document.querySelectorAll('tr')
+    let rows = document.querySelectorAll('tbody tr')
     for (let i = 0; i<rows.length; i++){
         let cells = rows[i].getElementsByTagName('td');
         let found = false
@@ -28,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function (){
     searchbar.type = 'text'
     searchbar.id = 'searchbar'
     searchbar.addEventListener('keyup', tableFilter)
-    searchbar.placeholder="type student name"
+    searchbar.placeholder="filter user name"
     form.appendChild(searchbar)
     table_parent.insertBefore(form, table)
 })

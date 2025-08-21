@@ -1,11 +1,13 @@
-from django.contrib.auth.models import User
+from traceback import print_tb
+
+from django.contrib.auth.models import User, Group
 from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.template.context_processors import request
 from django.views import View
 
 from school.forms import GradesForm, AddSubjectForm, AddSubjectToTeacherForm, AddGradeObjectForm, \
-    SelectSubjectAndClassForm
+    SelectSubjectAndClassForm, SelectGroupForm
 from school.models import Grade, Subject, GradeObject, Klass
 
 
@@ -15,56 +17,100 @@ from school.models import Grade, Subject, GradeObject, Klass
 
 # Create your views here.
 #TODO add easy editing, add average, implement search
+#TODO dodaj srednie
 class GradesView(View):
     def get(self, request):
         user = request.user
         if user.is_authenticated:
             # print(user.groups.all())
             if user.groups.all()[0].name == 'Students':
-                classes = Klass.objects.filter(student=user)
-                subjects = Subject.objects.filter(klass__in=classes)
-                grade_subject = []
-                # subject : grades
-                for subject in subjects:
-                    grades = Grade.objects.filter(student=user, topic__subject=subject)
-                    average = 0
-                    for grade in grades:
-                        average += grade.grade * grade.topic.weight
-                    average = average / len(grades)
-                    grade_subject.append({
-                        'subject': subject,
-                        'grades': grades,
-                        'average': average
-                    })
-                return render(request, 'show_grades_student.html', {'grade_subject': grade_subject})
+                return self.student(request, user)
             if user.groups.all()[0].name == 'Teachers':
-                klass_id = request.GET.get('Klass')
-                filter_subject = request.GET.get('subject')
-                topics = GradeObject.objects.all()
-                students = User.objects.filter(groups__name='Students')
-                if filter_subject:
-                    topics = topics.filter(subject=filter_subject)
-                if klass_id:
-                    topics = topics.filter(subject__klass=klass_id)
-                    klass_obj = Klass.objects.get(id=klass_id)
-                    students = klass_obj.student.all()
-                grades_data = []
-                for student in students:
-                    student_grades = Grade.objects.filter(student=student).select_related('topic')
-                    topic_grades = []
-                    for topic in topics:
-                        grade = None
-                        for g in student_grades:
-                            if g.topic_id == topic.id:
-                                grade = g
-                                break
-                        topic_grades.append(grade)
-                    grades_data.append({
-                        'student': student,
-                        'grades': topic_grades,
-                    })
-                return render(request, 'show_grades_teacher.html', {'grades_data': grades_data, 'topics': topics, 'students': students, 'form': SelectSubjectAndClassForm()})
+                return self.student(request, user)
+            if user.groups.all()[0].name == 'Admins':
+                return self.admin(request, user)
         return redirect('home')
+
+    @staticmethod
+    def student(req, user):
+        classes = Klass.objects.filter(student=user)
+        subjects = Subject.objects.filter(klass__in=classes)
+        grade_subject = []
+        # subject : grades
+        for subject in subjects:
+            grades = Grade.objects.filter(student=user, topic__subject=subject)
+            average = 0
+            for grade in grades:
+                average += grade.grade * grade.topic.weight
+            average = average / len(grades)
+            grade_subject.append({
+                'subject': subject,
+                'grades': grades,
+                'average': average
+            })
+        return render(req, 'show_grades_student.html',
+                      {'grade_subject': grade_subject})
+
+    @staticmethod
+    def teacher(req, user):
+        klass_id = req.GET.get('Klass')
+        filter_subject = req.GET.get('subject')
+        topics = GradeObject.objects.all()
+        students = User.objects.filter(groups__name='Students')
+        if filter_subject:
+            topics = topics.filter(subject=filter_subject)
+        if klass_id:
+            topics = topics.filter(subject__klass=klass_id)
+            klass_obj = Klass.objects.get(id=klass_id)
+            students = klass_obj.student.all()
+        grades_data = []
+        for student in students:
+            student_grades = Grade.objects.filter(student=student).select_related('topic')
+            topic_grades = []
+            for topic in topics:
+                grade = None
+                for g in student_grades:
+                    if g.topic_id == topic.id:
+                        grade = g
+                        break
+                topic_grades.append(grade)
+            grades_data.append({
+                'student': student,
+                'grades': topic_grades,
+            })
+        return render(req, 'show_grades_teacher.html',
+                      {'grades_data': grades_data, 'topics': topics, 'students': students,
+                       'form': SelectSubjectAndClassForm()})
+
+    @staticmethod
+    def admin(req, user):
+        # chce moc widziec i uczniow i nauczycieli, plus srednie wiec filtry na grupe i imie
+        form = SelectGroupForm()
+        grades = Grade.objects.all()
+        chosen_group_id = req.GET.get('group')
+        if chosen_group_id:
+            chosen_group = Group.objects.get(id=chosen_group_id).name
+        else:
+            chosen_group = None
+        users_with_grades = {}
+        if chosen_group == 'Students':
+            for grade in grades:
+                if student_grades := users_with_grades.get(grade.student):
+                    student_grades['grades'].append(grade)
+                else:
+                    users_with_grades[grade.student] = {'grades': [grade]}
+        elif chosen_group == 'Teachers':
+            for grade in grades:
+                if teacher_grades := users_with_grades.get(grade.teacher):
+                    teacher_grades['grades'].append(grade)
+                else:
+                    users_with_grades[grade.teacher] = {'grades': [grade]}
+        print(users_with_grades)
+        return render(req, 'show_grades_admin.html',
+                      {
+                          'users_with_grades': users_with_grades,
+                          'chosen_group': chosen_group,
+                          'form': form})
 
 #TODO remove
 class AddGradeView(View):

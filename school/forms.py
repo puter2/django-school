@@ -1,4 +1,5 @@
 from django import forms
+from django.contrib.auth.models import Group
 
 from school.models import Grade, Subject, GradeObject, Klass, Subject
 
@@ -74,4 +75,9 @@ class SelectSubjectAndClassForm(forms.Form):
     Klass = forms.ModelChoiceField(
         queryset=Klass.objects.all(),
         required=False,
+    )
+
+class SelectGroupForm(forms.Form):
+    group = forms.ModelChoiceField(
+        queryset=Group.objects.exclude(name='Admins'),
     )

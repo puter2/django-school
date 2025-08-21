@@ -5,6 +5,7 @@
     <li><a href="{% url 'home' %}">Home</a></li>
     {% if user.is_authenticated %}
         <li><a href="{% url 'logout' %}">logout</a></li>
+        <li><a href="{% url 'grades' %}">show grades</a></li>
         {% if user.groups.all.0.name  == 'Students' or user.groups.all.0.name  == 'Teachers'%}
             <li><a href="{% url 'grades' %}">show grades</a></li>
             <li><a href="{% url 'show_users' %}">show users</a></li>

@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{%  block content %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'tooltip.css' %}">
+    <script src="{% static 'tooltips.js' %}"></script>
+    <script src="{% static 'tableFilter.js' %}"></script>
+    <script src="{% static 'average_calculator.js' %}"></script>
+    <form method="get">
+        {% csrf_token %}
+        {{ form }}
+        <input type="submit">
+    </form>
+<table>
+    <thead>
+    <tr>
+        <th>User</th>
+        <th>Average</th>
+    </tr>
+    </thead>
+    <tbody>
+        {% for grade_user, data in users_with_grades.items %}
+            <tr>
+            <td>{{ grade_user }}</td>
+            <td id="average" class="tooltip" data-tooltip='average'>{{ data.average }}</td>
+            {% for grade in data.grades %}
+                <td id="grade" class="tooltip" data-weight="{{ grade.topic.weight }}" data-tooltip="student: {{ grade.student.get_full_name }} &#10 teacher: {{ grade.teacher.get_full_name }} &#10 topic:{{ grade.topic }} &#10 weight: {{ grade.topic.weight }}">{{ grade.grade }}</td>
+            {% endfor %}
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}
